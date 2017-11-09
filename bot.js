@@ -55,7 +55,7 @@ var env = require('node-env-file');
 env(__dirname + '/.env');
 
 
-if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
+if (!process.env.clientId || !process.env.clientSecret ) {
   console.log('Error: Specify clientId clientSecret and PORT in environment');
   process.exit(1);
 }
