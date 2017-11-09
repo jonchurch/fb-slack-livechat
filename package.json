@@ -5,19 +5,18 @@
   "main": "bot.js",
   "scripts": {
     "start": "node bot.js",
-	"tunnel": "ngrok http --subdomain slack-live 3000 "
+    "tunnel": "ngrok http --subdomain slack-live 3000 "
   },
   "dependencies": {
     "body-parser": "^1.15.2",
     "botkit": "^0.6",
     "botkit-storage-mongo": "^1.0.6",
-    "botkit-studio-metrics": "^0.0.1",
     "debug": "^2.3.3",
     "express": "^4.14.0",
     "node-env-file": "^0.1.8",
     "querystring": "^0.2.0",
-    "request": "^2.79.0",
-    "wordfilter": "^0.2.6"
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
   },
   "devDependencies": {},
   "repository": {
