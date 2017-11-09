@@ -15,4 +15,34 @@ module.exports = function(webserver, controller) {
 
     });
 
+    webserver.post('/facebook/receive', function(req, res) {
+
+        // NOTE: we should enforce the token check here
+
+        // respond to Facebook that the webhook has been received.
+        res.status(200);
+
+		// Spawn a Facebook Bot? Not yet, just receive messages
+		// const bot = controller.spawn({})
+
+        // Now, pass the webhook into be processed
+		// What I need is to push message events to Slack
+		// Would be great to listen to all message_received events
+		//
+		// Really, I just need to parse the messages
+		//
+		// facebook.controller.on('message_received', handleFacebookMessage)
+        controller.facebook.handleWebhookPayload(req, res);
+
+    });
+
+	webserver.get('/facebook/receive', function(req, res) {
+				if (req.query['hub.mode'] == 'subscribe') {
+					if (req.query['hub.verify_token'] == process.env.verify_token) {
+						res.send(req.query['hub.challenge']);
+					} else {
+						res.send('OK');
+					}
+				}
+			});
 }

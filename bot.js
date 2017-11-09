@@ -84,6 +84,23 @@ if (process.env.MONGO_URI) {
 // Create the Botkit controller, which controls all instances of the bot.
 var controller = Botkit.slackbot(bot_options);
 
+controller.handleFacebookPayload= function(req, res, bot) {
+        var payload = req.body;
+
+        // facebook may send more than 1 message payload at a time
+        // we split these up into multiple message objects for ingestion
+        if (payload.entry) {
+            for (var e = 0; e < payload.entry.length; e++) {
+                if (payload.entry[e].messaging) {
+                    for (var m = 0; m < payload.entry[e].messaging.length; m++) {
+                        controller.facebook.ingest(bot, payload.entry[e].messaging[m], res);
+                    }
+                }
+            }
+        }
+
+    };
+
 controller.startTicking();
 
 // Set up an Express-powered webserver to expose oauth and webhook endpoints
