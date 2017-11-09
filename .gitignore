@@ -1,0 +1,7 @@
+.db
+node_modules
+
+.env
+components/routes/_*
+
+*.log
