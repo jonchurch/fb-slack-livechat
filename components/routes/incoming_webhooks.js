@@ -21,6 +21,7 @@ module.exports = function(webserver, slack_controller, facebook_controller) {
 
         // respond to Facebook that the webhook has been received.
         res.status(200);
+		console.log('Got req from fb')
 
 		// Spawn a Facebook Bot? Not yet, just receive messages
 		const bot = facebook_controller.spawn({})

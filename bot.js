@@ -91,10 +91,12 @@ var facebook_controller = Botkit.facebookbot({
 	verify_token: process.env.verify_token,
 	debug: true,
 	json_file_store : __dirname + '/.data/db/' // store user data in a simple JSON format
-
 })
 
 facebook_controller.startTicking()
+
+require('./components/getFbAppId')(facebook_controller)
+require('./fb_handlers')(slack_controller, facebook_controller)
 
 // Set up an Express-powered webserver to expose oauth and webhook endpoints
 var webserver = require(__dirname + '/components/express_webserver.js')(slack_controller, facebook_controller);

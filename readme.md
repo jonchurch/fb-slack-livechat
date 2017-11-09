@@ -13,4 +13,6 @@ okay so we can receive FB messages now! Where to put em? Also how to understand 
 How to receive them em?
 I want to notify the controller on 'message_recieved' from facebook, I can just do two controllers and live with it, I'm sure I'll run into some fucking gotchas but whatever
 
+Okay, I have two controllers, lets receive a message from FB as primary app, gotta install my botkit fork too
+
 ## Slack => Facebook Messenger
