@@ -14,13 +14,16 @@ module.exports = function(webserver, slack_controller, facebook_controller) {
         slack_controller.handleWebhookPayload(req, res);
 
     });
+	webserver.get('/test', (req, res) => {
+		res.send('ok')
+	})
 
     webserver.post('/facebook/receive', function(req, res) {
 
         // NOTE: we should enforce the token check here
 
         // respond to Facebook that the webhook has been received.
-        res.status(200);
+        res.status(200).send('ok');
 		console.log('Got req from fb')
 
 		// Spawn a Facebook Bot? Not yet, just receive messages
