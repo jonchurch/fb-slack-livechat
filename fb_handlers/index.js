@@ -15,13 +15,13 @@ module.exports = (slack_controller, facebook_controller) => {
 	facebook_controller.on('standby', (bot, message) => {
 		console.log('Another standby message...')
 
-		facebook_controller.api.handover.take_thread_control(message.user, (err, res) => {
-			if (err) {
-				console.log(err)
-			} else {
-				console.log({res})
-			}
-		})
+		// facebook_controller.api.handover.take_thread_control(message.user, (err, res) => {
+		// 	if (err) {
+		// 		console.log(err)
+		// 	} else {
+		// 		console.log({res})
+		// 	}
+		// })
 	})
 
 	facebook_controller.on('facebook_receive_thread_control', (bot, message) => {
