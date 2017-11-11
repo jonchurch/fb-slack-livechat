@@ -49,4 +49,10 @@ module.exports = function(webserver, slack_controller, facebook_controller) {
 					}
 				}
 			});
+	webserver.get('/facebook/handover', (req, res) => {
+		const user = req.query['messenger user id']
+
+		facebook_controller.api.handover.take_thread_control(user)
+
+	})
 }
