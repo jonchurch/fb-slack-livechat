@@ -1,7 +1,7 @@
-var tickets = []
 
 module.exports = (slack_controller, facebook_controller) => {
 
+	slack_controller.tickets = []
 	slack_controller.on('interactive_message_callback', (bot, message) => {
 		if (message.callback_id === 'select_support_channel') {
 			bot.reply(message, 'Thanks for picking a channel')
@@ -23,9 +23,10 @@ module.exports = (slack_controller, facebook_controller) => {
 			})
 		}
 	})
-
+	
+	// Handle messages going into support threads
 	slack_controller.on('ambient', (bot, message) => {
-		const openTicket = tickets.find(e => e.thread_ts === message.thread_ts && e.open === true)
+		const openTicket = slack_controller.tickets.find(e => e.thread_ts === message.thread_ts && e.open === true)
 		if (openTicket) {
 			console.log({openTicket})
 			// send message to fb_user
@@ -47,17 +48,22 @@ module.exports = (slack_controller, facebook_controller) => {
 		console.log('Bot Config', bot.config)
 		const origin = {
 			channel: bot.config.support_channel,
+			thread_ts: message.ticket.thread_ts
 		}
 		const slackMsg = {
-			text: `Message from ${message.profile.first_name} ${message.profile.last_name}: \n${message.text}`
+			as_user: false,
+			username: `${message.profile.first_name} ${message.profile.last_name}`,
+			text: message.text,
+			icon_url: message.profile.profile_pic
 		}
+		console.log(message.profile)
 		bot.reply(origin, slackMsg)
 	})
 
 	slack_controller.on('open_ticket', (bot, message) => {
 		bot.reply({channel: bot.config.support_channel}, 'User has opened a Live Chat Ticket!', (err, msg) => {
 
-		tickets.push({thread_ts: msg.ts, fb_id: message.user, open: true})
+		slack_controller.tickets.push({thread_ts: msg.ts, fb_id: message.user, open: true})
 		})
 
 	})
