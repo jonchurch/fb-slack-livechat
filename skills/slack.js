@@ -22,6 +22,12 @@ module.exports = (slack_controller, facebook_controller) => {
 				}
 			})
 		}
+		if (message.callback_id === 'answer_request') {
+			// answer ticket functionality
+			// mark ticket as "live"
+			// Update button status, add a "Hangup" Button
+
+		}
 	})
 	
 	// Handle messages going into support threads
@@ -62,10 +68,37 @@ module.exports = (slack_controller, facebook_controller) => {
 
 	slack_controller.on('open_ticket', (bot, message) => {
 		bot.reply({channel: bot.config.support_channel}, {
-			text: `*${message.profile.first_name} ${message.profile.last_name}* requested a Human! \n*Status:* :rotating_light: Open`
+			text: `*${message.profile.first_name} ${message.profile.last_name}* requested a Human! \n*Status:* :rotating_light: Opened`
 		}, (err, msg) => {
 
 		slack_controller.tickets.push({thread_ts: msg.ts, fb_id: message.user, open: true})
+			msg.thread_ts = msg.ts
+			bot.reply(msg, {
+			"attachments": [
+				{
+					"text": "Respond to start chatting",
+					"fallback": "You are unable to choose a game",
+					"callback_id": "answer_request",
+					"color": "#3AA3E3",
+					"attachment_type": "default",
+					"actions": [
+						{
+							"name": "answer",
+							"text": "Close Ticket",
+							"type": "button",
+							"style": "primary",
+							"value": `answer:${msg.thread_ts}`
+						},
+						{
+							"name": "silence",
+							"text": "Resolve",
+							"type": "button",
+							"value": `silence:${msg.thread_ts}`
+						}
+					]
+				}
+			]
+		})
 		})
 
 	})
