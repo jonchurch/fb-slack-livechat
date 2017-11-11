@@ -2,6 +2,16 @@
 
 module.exports = (slack_controller, facebook_controller) => {
 
+	facebook_controller.middleware.receive.use((bot, message, next) => {
+		bot.getMessageUser(message)
+			.then(profile => {
+				message.profile = profile
+				next()
+			}).catch(err => {
+				next(err)
+			})
+	})
+
 	facebook_controller.on('standby', (bot, message) => {
 		console.log('Another standby message...')
 
@@ -21,32 +31,18 @@ module.exports = (slack_controller, facebook_controller) => {
 		console.log('Saw that FB event!')
 
 		bot.reply(message, 'Heard your facebook message!')
-		postToSlack(message)
-
-		// const bot = slack_controller.spawn()
-
-	})
-
-	function postToSlack(message) {
-
-		// find the access_token for the Slack team associated with the FB page
-		// const team = slack_controller.getTeamConfigForPage(message)
-
-		console.log('Hello?')
-		slack_controller.storage.teams.all((err, teams) => {
+		slack_controller.storage.teams.get(process.env.TEAM, function(err, team) {
 			if (err) {
 				console.log({err})
 			} else {
-				console.log({teams})
+				console.log({team})
+				// spawn a bot that is configured to respond in slack context
+				const bot = slack_controller.spawn(team)
+
+				// I'll need to know the channel to post it to, selected from Slack
+				slack_controller.trigger('facebook_message', [bot, message])
 			}
 		})
-		// spawn a bot that is configured to respond in slack context
-		// const bot = slack_controller.spawn(team)
+	})
 
-
-		// I need to take this FB message, with the User info, and Post it into slack...
-		// I'll need to know the channel to post it to, selected from Slack
-		// slack_controller.trigger('facebook_message', [bot, message])
-		
-	}
 }
