@@ -22,10 +22,20 @@ module.exports = (slack_controller, facebook_controller) => {
 				}
 			})
 		}
-		if (message.callback_id === 'answer_request') {
+		if (message.callback_id === 'resolve') {
 			// answer ticket functionality
 			// mark ticket as "live"
 			// Update button status, add a "Hangup" Button
+			const ticket = slack_controller.tickets.find(e => e.thread_ts === message.text)
+			
+			// this is when I do the thread control handover!
+			facebook_controller.api.handover.pass_thread_control(ticket.fb_id, facebook_controller.config.primary_app, '', (err, res)=> {
+				if (err) {
+					console.log({err})
+				} else {
+					console.log('Success with handover', res)
+				}
+			})
 
 		}
 	})
@@ -78,7 +88,7 @@ module.exports = (slack_controller, facebook_controller) => {
 				{
 					"text": "Respond to start chatting",
 					"fallback": "You are unable to choose a game",
-					"callback_id": "answer_request",
+					"callback_id": "resolve",
 					"color": "#3AA3E3",
 					"attachment_type": "default",
 					"actions": [
@@ -87,7 +97,7 @@ module.exports = (slack_controller, facebook_controller) => {
 							"text": "Close Ticket",
 							"type": "button",
 							"style": "primary",
-							"value": `answer:${msg.thread_ts}`
+							"value": `${msg.thread_ts}`
 						},
 						{
 							"name": "silence",

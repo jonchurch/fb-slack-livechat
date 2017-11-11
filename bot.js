@@ -90,6 +90,7 @@ var facebook_controller = Botkit.facebookbot({
 	access_token: process.env.access_token,
 	verify_token: process.env.verify_token,
 	debug: true,
+	primary_app: process.env.primary_app
 	// json_file_store : __dirname + '/.data/db/' // store user data in a simple JSON format
 })
 
