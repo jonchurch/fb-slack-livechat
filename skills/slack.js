@@ -31,7 +31,7 @@ module.exports = (slack_controller, facebook_controller) => {
 			console.log({openTicket})
 			// send message to fb_user
 			const bot = facebook_controller.spawn({})
-			bot.reply({channel: openTicket.fb_id}, {text: message.text })
+			bot.reply({channel: openTicket.fb_id}, {text: `Support: ${message.text}` })
 		} else {
 			bot.reply(message, 'That ticket is closed!')
 		}
@@ -61,7 +61,9 @@ module.exports = (slack_controller, facebook_controller) => {
 	})
 
 	slack_controller.on('open_ticket', (bot, message) => {
-		bot.reply({channel: bot.config.support_channel}, 'User has opened a Live Chat Ticket!', (err, msg) => {
+		bot.reply({channel: bot.config.support_channel}, {
+			text: `*${message.profile.first_name} ${message.profile.last_name}* requested a Human! \n*Status:* :rotating_light: Open`
+		}, (err, msg) => {
 
 		slack_controller.tickets.push({thread_ts: msg.ts, fb_id: message.user, open: true})
 		})
