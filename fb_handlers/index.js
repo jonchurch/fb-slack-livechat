@@ -27,6 +27,19 @@ module.exports = (slack_controller, facebook_controller) => {
 	facebook_controller.on('facebook_receive_thread_control', (bot, message) => {
 		
 	})
+	facebook_controller.hears('operator', 'message_received', (bot, message) => {
+		bot.reply(message, "Someone will be with you as soon as possible!")
+		slack_controller.storage.teams.get(process.env.TEAM, function(err, team) {
+			if (err) {
+				console.log({err})
+			} else {
+				console.log({team})
+
+				const bot = slack_controller.spawn(team)
+				slack_controller.trigger('open_ticket', [bot, message])
+			}
+		})
+	})
 	facebook_controller.on('message_received', (bot, message) => {
 		console.log('Saw that FB event!')
 

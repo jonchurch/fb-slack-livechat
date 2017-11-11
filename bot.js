@@ -66,7 +66,7 @@ var debug = require('debug')('botkit:main');
 var bot_options = {
     clientId: process.env.clientId,
     clientSecret: process.env.clientSecret,
-    // debug: true,
+    debug: true,
     scopes: ['bot'],
     studio_token: process.env.studio_token,
     studio_command_uri: process.env.studio_command_uri
@@ -116,7 +116,7 @@ require(__dirname + '/components/onboarding.js')(slack_controller);
 
 var normalizedPath = require("path").join(__dirname, "skills");
 require("fs").readdirSync(normalizedPath).forEach(function(file) {
-  require("./skills/" + file)(slack_controller);
+  require("./skills/" + file)(slack_controller, facebook_controller);
 });
 
 
