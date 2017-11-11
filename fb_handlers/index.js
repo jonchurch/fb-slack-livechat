@@ -30,13 +30,23 @@ module.exports = (slack_controller, facebook_controller) => {
 	function postToSlack(message) {
 
 		// find the access_token for the Slack team associated with the FB page
-		const team = slack_controller.getTeamConfigForPage(message)
+		// const team = slack_controller.getTeamConfigForPage(message)
 
+		console.log('Hello?')
+		slack_controller.storage.teams.all((err, teams) => {
+			if (err) {
+				console.log({err})
+			} else {
+				console.log({teams})
+			}
+		})
 		// spawn a bot that is configured to respond in slack context
-		const bot = slack_controller.spawn(team)
+		// const bot = slack_controller.spawn(team)
+
 
 		// I need to take this FB message, with the User info, and Post it into slack...
-		slack_controller.trigger('facebook_message', [bot, message])
+		// I'll need to know the channel to post it to, selected from Slack
+		// slack_controller.trigger('facebook_message', [bot, message])
 		
 	}
 }
