@@ -1,10 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 <title>Facebook Login JavaScript Example</title>
 <meta charset="UTF-8">
 </head>
 <body>
+<div class="container">
+	<div class="dropdown" style="display: none;">
+	  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		Dropdown button
+	  </button>
+	  <div id="pages-dropdown" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+	  </div>
+	</div>
+	</div>
+</div>
 <script>
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
@@ -16,15 +30,21 @@
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
 
-		// Redirect to auth callback
-		//window.location.replace('/facebook/auth?token=' + response.authResponse.accessToken)
-
 		fetch('/facebook/auth?token=' + response.authResponse.accessToken)
-			.then(res => res.json())
-			.then(pages => {
+			.then(function (res) { 
+					return res.json()
+			})
+			.then(function(pages) {
 					console.log({pages})
+					
+					$('#pages-dropdown')
+					.append(pages.data.map(function(el) { 
+								return '<a class="dropdown-item" id="' + el.id + ' href="#">' + el.name + '</a>'
+								}))
 
-					}).catch(err => console.log(err))
+					$('.dropdown').show()
+
+					}).catch(function(err) {console.log(err)})
 
 		// get a list of pages
       testAPI();
