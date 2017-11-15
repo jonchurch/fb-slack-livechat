@@ -78,7 +78,7 @@ if (process.env.MONGO_URI) {
     var mongoStorage = require('botkit-storage-mongo')({mongoUri: process.env.MONGO_URI});
     bot_options.storage = mongoStorage;
 } else {
-    bot_options.json_file_store = __dirname + '/.data/db/'; // store user data in a simple JSON format
+    // bot_options.json_file_store = __dirname + '/.data/db/'; // store user data in a simple JSON format
 }
 
 // Create the Botkit controller, which controls all instances of the bot.
@@ -87,16 +87,19 @@ var slack_controller = Botkit.slackbot(bot_options);
 slack_controller.startTicking();
 
 var facebook_controller = Botkit.facebookbot({
-	access_token: process.env.access_token,
+	// access_token: process.env.access_token,
 	verify_token: process.env.verify_token,
 	debug: true,
-	primary_app: process.env.primary_app
-	// json_file_store : __dirname + '/.data/db/' // store user data in a simple JSON format
+	primary_app: process.env.primary_app,
+	json_file_store : __dirname + '/.data/db/fb' // store user data in a simple JSON format
+})
+facebook_controller.storage.teams.all(function(err, teams) {
+console.log('teams:',teams)
 })
 
 facebook_controller.startTicking()
 
-require('./components/getFbAppId')(facebook_controller)
+// require('./components/getFbAppId')(facebook_controller)
 require('./fb_handlers')(slack_controller, facebook_controller)
 
 // Set up an Express-powered webserver to expose oauth and webhook endpoints

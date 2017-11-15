@@ -8,7 +8,7 @@ module.exports = (slack_controller, facebook_controller) => {
 				message.profile = profile
 				next()
 			}).catch(err => {
-				next(err)
+				next()
 			})
 	})
 
@@ -41,6 +41,7 @@ module.exports = (slack_controller, facebook_controller) => {
 		})
 	})
 	facebook_controller.on('message_received', (bot, message) => {
+		bot.reply(message, 'Heck yes!')
 		console.log('Saw that FB event!')
 		// check if user has an open ticket in the system (tix snooze eventually)
 		// if so, summon the Slack Team for that user, and route it on in there
