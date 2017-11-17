@@ -2,12 +2,29 @@ const rp = require('request-promise').defaults({json: true})
 
 module.exports = (webserver, slack_controller, facebook_controller) => {
 	webserver.get('/facebook/auth', (req, res) => {
-		rp('https://graph.facebook.com/v2.11/me/accounts?access_token=' + req.query.token)
-		.then(pages => {
+		// Okay, here we get the short lived access token, we need to convert it to longlived
+		// and make this below call with the long lived token
+		rp({
+			url: 'https://graph.facebook.com/v2.11/oauth/access_token',
+			qs: {
+				grant_type: 'fb_exchange_token',
+				client_id: process.env.fb_client_id,
+				client_secret: process.env.fb_client_secret,
+				fb_exchange_token: req.query.token
+			}
+		})
+		.then(token => {
 
-			res.json(pages)
+			rp(`https://graph.facebook.com/v2.11/me/accounts?access_token=${token.access_token}`)
+			.then(pages => {
 
-			}).catch(err => res.send(false))
+				res.json(pages)
+
+				}).catch(err => res.send(false))
+		}).catch(err => {
+			console.log(err.message)
+			res.send(err.message)
+		})
 	})
 
 	webserver.post('/facebook/auth', (req, res) => {
