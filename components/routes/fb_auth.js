@@ -2,8 +2,7 @@ const rp = require('request-promise').defaults({json: true})
 
 module.exports = (webserver, slack_controller, facebook_controller) => {
 	webserver.get('/facebook/auth', (req, res) => {
-		// Okay, here we get the short lived access token, we need to convert it to longlived
-		// and make this below call with the long lived token
+		// Take short lived access token, exchange it for longlived
 		rp({
 			url: 'https://graph.facebook.com/v2.11/oauth/access_token',
 			qs: {
@@ -14,10 +13,9 @@ module.exports = (webserver, slack_controller, facebook_controller) => {
 			}
 		})
 		.then(token => {
-
+			// Get list of pages and access tokens that don't expire
 			rp(`https://graph.facebook.com/v2.11/me/accounts?access_token=${token.access_token}`)
 			.then(pages => {
-
 				res.json(pages)
 
 				}).catch(err => res.send(false))

@@ -93,9 +93,9 @@ var facebook_controller = Botkit.facebookbot({
 	primary_app: process.env.primary_app,
 	json_file_store : __dirname + '/.data/db/fb' // store user data in a simple JSON format
 })
-facebook_controller.storage.teams.all(function(err, teams) {
-console.log('teams:',teams)
-})
+// facebook_controller.storage.teams.all(function(err, teams) {
+// console.log('teams:',teams)
+// })
 
 facebook_controller.startTicking()
 
