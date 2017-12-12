@@ -87,7 +87,7 @@ var slack_controller = Botkit.slackbot(bot_options);
 slack_controller.startTicking();
 
 var facebook_controller = Botkit.facebookbot({
-	access_token: process.env.access_token,
+	access_token: process.env.page_token,
 	verify_token: process.env.verify_token,
 	debug: true,
 	primary_app: process.env.primary_app

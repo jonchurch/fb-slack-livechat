@@ -13,6 +13,13 @@ module.exports = (slack_controller, facebook_controller) => {
 			})
 	})
 
+	facebook_controller.middleware.receive.use((bot, message, next) => {
+		// I need to get the page record here to find the slack team associated with this page
+		//
+		// slack_controller.storage.teams.find({page: message.page})
+		next()
+	})
+
 	facebook_controller.on('facebook_standby', (bot, message) => {
 		facebook_controller.api.handover.take_thread_control(message.user, (err, res) => {
 			console.log('Standby Message:', message)
@@ -29,6 +36,9 @@ module.exports = (slack_controller, facebook_controller) => {
 	})
 	facebook_controller.hears('operator', 'message_received', (bot, message) => {
 		bot.reply(message, "Someone will be with you as soon as possible!")
+		//@TODO fix this fudged team fetch
+		//look up team deets by FB page id
+		//oooooh i wanna make this all sererless SOOO BAD!
 		slack_controller.storage.teams.get(process.env.TEAM, function(err, team) {
 			if (err) {
 				console.log({err})
