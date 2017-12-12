@@ -8,14 +8,14 @@ module.exports = (slack_controller, facebook_controller) => {
 				message.profile = profile
 				next()
 			}).catch(err => {
+				console.log('Error in profile middleware:', err)
 				next(err)
 			})
 	})
 
-	facebook_controller.on('standby', (bot, message) => {
-		console.log('Another standby message...')
-
+	facebook_controller.on('facebook_standby', (bot, message) => {
 		facebook_controller.api.handover.take_thread_control(message.user, (err, res) => {
+			console.log('Standby Message:', message)
 			if (err) {
 				console.log(err)
 			} else {

@@ -23,9 +23,6 @@ module.exports = (slack_controller, facebook_controller) => {
 			})
 		}
 		if (message.callback_id === 'resolve') {
-			// answer ticket functionality
-			// mark ticket as "live"
-			// Update button status, add a "Hangup" Button
 			const ticket = slack_controller.tickets.find(e => e.thread_ts === message.text)
 			
 			// this is when I do the thread control handover!
@@ -49,7 +46,7 @@ module.exports = (slack_controller, facebook_controller) => {
 			const bot = facebook_controller.spawn({})
 			bot.reply({channel: openTicket.fb_id}, {text: `Support: ${message.text}` })
 		} else {
-			bot.reply(message, 'That ticket is closed!')
+			bot.replyEphemeral(message, 'This ticket is closed!')
 		}
 	})
 
@@ -59,9 +56,8 @@ module.exports = (slack_controller, facebook_controller) => {
 		slack_controller.trigger('onboard', [bot])
 	})
 	
+	// Post messages from FB in the support channel
 	slack_controller.on('facebook_message', (bot, message) => {
-		// Post the FB message in the appopriate channel, fudged for now
-		console.log('Bot Config', bot.config)
 		const origin = {
 			channel: bot.config.support_channel,
 			thread_ts: message.ticket.thread_ts
@@ -88,7 +84,7 @@ module.exports = (slack_controller, facebook_controller) => {
 				{
 					"text": "Respond to start chatting",
 					"fallback": "You are unable to choose a game",
-					"callback_id": "resolve",
+					"callback_id": "close",
 					"color": "#3AA3E3",
 					"attachment_type": "default",
 					"actions": [
@@ -99,12 +95,6 @@ module.exports = (slack_controller, facebook_controller) => {
 							"style": "primary",
 							"value": `${msg.thread_ts}`
 						},
-						{
-							"name": "silence",
-							"text": "Resolve",
-							"type": "button",
-							"value": `silence:${msg.thread_ts}`
-						}
 					]
 				}
 			]
